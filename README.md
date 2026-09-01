@@ -1,2 +1,0 @@
-# ONG-Proyecto
-Proyecto ONG

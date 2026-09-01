@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Información sobre alta de usuarios y permisos en VinculArte.">
+  <meta name="theme-color" content="#5f4b8b">
+  <title>Alta de usuarios | VinculArte</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body class="auth-body">
+  <header class="auth-header container">
+    <a class="brand" href="index.html"><span class="brand-symbol" aria-hidden="true"><span>V</span></span><span class="brand-copy"><strong>VinculArte</strong><small>Casa · red · acompañamiento</small></span></a>
+    <a class="back-link" href="login.html">← Ir al inicio de sesión</a>
+  </header>
+  <main class="admin-access-main">
+    <section class="admin-access-card">
+      <div class="admin-access-icon" aria-hidden="true">⌁</div>
+      <p class="section-kicker">Alta de usuarios</p>
+      <h1>El registro no es público.</h1>
+      <p class="admin-access-lead">En la documentación del proyecto, el <strong>SuperAdmin</strong> crea usuarios, define roles, asigna permisos y decide a qué casas puede ingresar cada persona del equipo.</p>
+      <div class="permission-flow" aria-label="Flujo de alta de usuario">
+        <div><span>1</span><strong>Crear usuario</strong><small>Datos de la cuenta</small></div>
+        <i aria-hidden="true">→</i>
+        <div><span>2</span><strong>Asignar rol</strong><small>Responsabilidades</small></div>
+        <i aria-hidden="true">→</i>
+        <div><span>3</span><strong>Asignar casas</strong><small>Alcance de acceso</small></div>
+      </div>
+      <div class="admin-access-actions">
+        <a class="button button-primary" href="login.html">Ya tengo acceso</a>
+        <a class="button button-ghost" href="index.html">Volver a VinculArte</a>
+      </div>
+      <p class="form-note">Esta pantalla reemplaza el registro público anterior para respetar el modelo de seguridad definido en el proyecto.</p>
+    </section>
+  </main>
+</body>
+</html>

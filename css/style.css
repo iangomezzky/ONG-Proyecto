@@ -2245,3 +2245,20 @@ img {
     width: 100%;
   }
 }
+
+
+.internal-section {
+    position: relative;
+    z-index: 10;
+}
+
+.internal-grid {
+    position: relative;
+    z-index: 11;
+}
+
+.internal-grid .button {
+    position: relative;
+    z-index: 12;
+    pointer-events: auto;
+}

@@ -153,30 +153,82 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
+    // ======================================================
+    // LOGIN DEL PROTOTIPO
+    // ======================================================
 
-    // ======================================================
-    // LOGIN DEMO
-    // ======================================================
+    // Credenciales de demostración
+    const USUARIO_ADMIN = "admin";
+    const CONTRASENA_ADMIN = "admin123";
 
     document
         .querySelectorAll("[data-demo-form]")
         .forEach((form) => {
 
-            form.addEventListener(
-                "submit",
-                (event) => {
+            form.addEventListener("submit", (event) => {
 
-                    event.preventDefault();
+                event.preventDefault();
 
-                    const status =
-                        form.querySelector(
-                            "[data-demo-status]"
+                const usuario = document
+                    .querySelector("#usuario")
+                    .value
+                    .trim();
+
+                const contrasena = document
+                    .querySelector("#contrasenia")
+                    .value;
+
+                const status = form.querySelector(
+                    "[data-demo-status]"
+                );
+
+                // ----------------------------------------------
+                // VALIDAR CREDENCIALES
+                // ----------------------------------------------
+
+                if (
+                    usuario === USUARIO_ADMIN &&
+                    contrasena === CONTRASENA_ADMIN
+                ) {
+
+                    // Guardamos una sesión simple para la demo
+                    sessionStorage.setItem(
+                        "vincularteSesion",
+                        "activa"
+                    );
+
+                    sessionStorage.setItem(
+                        "vincularteUsuario",
+                        usuario
+                    );
+
+                    if (status) {
+                        status.textContent =
+                            "Acceso correcto. Ingresando al sistema...";
+
+                        status.classList.add(
+                            "is-visible"
                         );
+                    }
+
+                    // Pequeña espera para que se vea el mensaje
+                    setTimeout(() => {
+
+                        window.location.href =
+                            "sistema.html";
+
+                    }, 600);
+
+                } else {
+
+                    // ------------------------------------------
+                    // CREDENCIALES INCORRECTAS
+                    // ------------------------------------------
 
                     if (status) {
 
                         status.textContent =
-                            "Demo visual: conectá esta pantalla al sistema de autenticación para habilitar el ingreso.";
+                            "Usuario o contraseña incorrectos.";
 
                         status.classList.add(
                             "is-visible"
@@ -185,7 +237,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
                 }
-            );
+
+            });
 
         });
 

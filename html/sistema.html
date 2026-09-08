@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="es-AR">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Prototipo del sistema interno de gestión de VinculArte.">
+  <meta name="theme-color" content="#5f4b8b">
+  <title>Sistema interno | VinculArte</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="../css/sistema.css">
+  <script src="../js/sistema.js" defer></script>
+</head>
+
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" data-view-link="dashboard" aria-label="Ir al resumen"><span class="brand-symbol"
+          aria-hidden="true"><img class="brand-mark" aria-hidden="true" src="../assets/image1.png"></img></span>
+        <span class="brand-copy">
+          <strong>VinculArte</strong>
+          <small>Sistema interno</small>
+        </span>
+      </a>
+
+      <div class="sidebar-context">
+        <span class="status-dot"></span>
+        <div>
+          <small>Sesión activa</small>
+          <strong>SuperAdmin</strong>
+        </div>
+      </div>
+
+      <nav class="side-nav" aria-label="Navegación del sistema">
+        <p class="nav-label">Administración</p>
+        <button class="nav-item is-active" data-view-link="dashboard"><span>⌂</span> Resumen</button>
+        <button class="nav-item" data-view-link="houses"><span>◇</span> Casas</button>
+        <button class="nav-item" data-view-link="users"><span>◎</span> Usuarios</button>
+        <button class="nav-item" data-view-link="assisted"><span>◌</span> Personas asistidas</button>
+        <button class="nav-item" data-view-link="professionals"><span>✦</span> Profesionales</button>
+
+        <p class="nav-label">Operación</p>
+        <button class="nav-item" data-view-link="daily"><span>▤</span> Parte diario</button>
+        <button class="nav-item" data-view-link="roles"><span>⌘</span> Roles y permisos</button>
+        <button class="nav-item" data-view-link="audit"><span>↻</span> Auditoría</button>
+
+        <p class="nav-label">Ayuda</p>
+        <button class="nav-item" data-view-link="manual"><span>?</span> Manual de usuario</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="quiet-button" id="resetDemo">Restablecer demo</button>
+        <a class="quiet-link" href="index.html">← Volver al sitio público</a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="menu-button" id="menuButton" aria-label="Abrir menú">☰</button>
+        <div>
+          <p class="top-eyebrow">Administración general</p>
+          <h1 id="pageTitle">Resumen</h1>
+        </div>
+        <div class="top-actions">
+          <span class="prototype-badge">PROTOTIPO V1</span>
+          <button class="avatar-button" type="button" aria-label="Usuario actual">
+            <span>IG</span>
+            <div><strong>Ian Gómez</strong><small>SuperAdmin</small></div>
+          </button>
+        </div>
+      </header>
+
+      <div class="content">
+
+        <!-- DASHBOARD -->
+        <section class="view is-active" id="view-dashboard" data-view="dashboard">
+          <div class="welcome-card">
+            <div>
+              <p class="section-kicker">Panel de administración central</p>
+              <h2>Una vista general de toda la red.</h2>
+              <p>Desde acá el SuperAdmin administra casas, personas, usuarios, roles y accesos. Los datos operativos se
+                organizan por casa.</p>
+            </div>
+            <div class="welcome-actions">
+              <button class="button button-primary" data-open-dialog="houseDialog">+ Nueva casa</button>
+              <button class="button button-secondary" data-open-dialog="userDialog">+ Nuevo usuario</button>
+            </div>
+          </div>
+
+          <div class="metric-grid">
+            <article class="metric-card">
+              <div class="metric-icon metric-icon--plum">◇</div>
+              <div><span>Casas activas</span><strong id="metricHouses">0</strong></div>
+              <small>Unidades de la organización</small>
+            </article>
+            <article class="metric-card">
+              <div class="metric-icon metric-icon--coral">◎</div>
+              <div><span>Usuarios</span><strong id="metricUsers">0</strong></div>
+              <small>Con acceso al sistema</small>
+            </article>
+            <article class="metric-card">
+              <div class="metric-icon metric-icon--sage">◌</div>
+              <div><span>Personas asistidas</span><strong id="metricAssisted">0</strong></div>
+              <small>Con seguimiento registrado</small>
+            </article>
+            <article class="metric-card">
+              <div class="metric-icon metric-icon--yellow">✦</div>
+              <div><span>Profesionales</span><strong id="metricProfessionals">0</strong></div>
+              <small>Vinculados a una o más casas</small>
+            </article>
+          </div>
+
+          <div class="dashboard-grid">
+            <article class="panel">
+              <div class="panel-heading">
+                <div>
+                  <p class="section-kicker">Casas</p>
+                  <h3>Estado de la red</h3>
+                </div>
+                <button class="text-button" data-view-link="houses">Ver todas →</button>
+              </div>
+              <div id="dashboardHouses" class="mini-house-list"></div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-heading">
+                <div>
+                  <p class="section-kicker">Trazabilidad</p>
+                  <h3>Actividad reciente</h3>
+                </div>
+                <button class="text-button" data-view-link="audit">Ver auditoría →</button>
+              </div>
+              <div id="dashboardActivity" class="activity-list"></div>
+            </article>
+          </div>
+
+          <article class="model-card">
+            <div>
+              <p class="section-kicker">Modelo de la V1</p>
+              <h3>El alta sigue el modelo de datos, no sólo una pantalla.</h3>
+              <p>Por ejemplo, crear una persona asistida genera conceptualmente una persona, su registro como asistida y
+                una estadía vinculada a una casa.</p>
+            </div>
+            <div class="model-flow">
+              <span>PERSONA</span><i>→</i><span>PERSONA_ASISTIDA</span><i>→</i><span>ESTADIA</span>
+            </div>
+          </article>
+        </section>
+
+        <!-- CASAS -->
+        <section class="view" id="view-houses" data-view="houses">
+          <div class="section-toolbar">
+            <div>
+              <p class="section-kicker">Administración de casas</p>
+              <h2>Casas de la organización</h2>
+              <p>Las cantidades de personas y profesionales se calculan a partir de sus relaciones, no se cargan
+                manualmente.</p>
+            </div>
+            <button class="button button-primary" data-open-dialog="houseDialog">+ Dar de alta una casa</button>
+          </div>
+
+          <div class="table-card">
+            <div class="table-toolbar">
+              <label class="search-field">
+                <span>⌕</span>
+                <input id="houseSearch" type="search" placeholder="Buscar por nombre o dirección">
+              </label>
+              <span class="table-count" id="houseCountLabel"></span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Casa</th>
+                    <th>Dirección</th>
+                    <th>Personas</th>
+                    <th>Profesionales</th>
+                    <th>Estado</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="housesTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- USUARIOS -->
+        <section class="view" id="view-users" data-view="users">
+          <div class="section-toolbar">
+            <div>
+              <p class="section-kicker">Accesos</p>
+              <h2>Usuarios y asignaciones</h2>
+              <p>El rol se asigna por casa. Un usuario puede estar vinculado a más de una.</p>
+            </div>
+            <button class="button button-primary" data-open-dialog="userDialog">+ Dar de alta un usuario</button>
+          </div>
+
+          <div class="info-strip">
+            <strong>Flujo de alta:</strong>
+            <span>PERSONA</span><i>→</i><span>USUARIO</span><i>→</i><span>USUARIO_CASA</span>
+          </div>
+
+          <div class="table-card">
+            <div class="table-toolbar">
+              <label class="search-field">
+                <span>⌕</span>
+                <input id="userSearch" type="search" placeholder="Buscar usuario o DNI">
+              </label>
+              <span class="table-count" id="userCountLabel"></span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Persona</th>
+                    <th>Usuario</th>
+                    <th>Casas y roles</th>
+                    <th>Contacto</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="usersTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- PERSONAS ASISTIDAS -->
+        <section class="view" id="view-assisted" data-view="assisted">
+          <div class="section-toolbar">
+            <div>
+              <p class="section-kicker">Acompañamiento</p>
+              <h2>Personas asistidas</h2>
+              <p>La permanencia se registra como estadía para permitir múltiples ingresos, incluso en casas distintas.
+              </p>
+            </div>
+            <button class="button button-primary" data-open-dialog="assistedDialog">+ Nueva persona asistida</button>
+          </div>
+
+          <div class="info-strip">
+            <strong>Flujo de alta:</strong>
+            <span>PERSONA</span><i>→</i><span>PERSONA_ASISTIDA</span><i>→</i><span>ESTADIA</span>
+          </div>
+
+          <div class="people-grid" id="assistedGrid"></div>
+        </section>
+
+        <!-- PROFESIONALES -->
+        <section class="view" id="view-professionals" data-view="professionals">
+          <div class="section-toolbar">
+            <div>
+              <p class="section-kicker">Equipo</p>
+              <h2>Profesionales</h2>
+              <p>Un profesional puede trabajar en una o varias casas.</p>
+            </div>
+            <button class="button button-primary" data-open-dialog="professionalDialog">+ Nuevo profesional</button>
+          </div>
+
+          <div class="people-grid" id="professionalsGrid"></div>
+        </section>
+
+        <!-- PARTE DIARIO -->
+        <section class="view" id="view-daily" data-view="daily">
+          <div class="section-toolbar">
+            <div>
+              <p class="section-kicker">Operación diaria</p>
+              <h2>Parte diario</h2>
+              <p>Un parte corresponde a una casa y una fecha, y contiene múltiples registros de asistencia.</p>
+            </div>
+            <button class="button button-primary" id="fakeDailyButton">+ Nuevo parte</button>
+          </div>
+
+          <div class="split-grid">
+            <article class="panel">
+              <div class="panel-heading">
+                <div>
+                  <p class="section-kicker">Parte abierto</p>
+                  <h3>Casa Centro · 07/09/2026</h3>
+                </div>
+                <span class="status-pill status-pill--draft">Borrador</span>
+              </div>
+              <div class="daily-summary">
+                <div><small>Presentes</small><strong>7</strong></div>
+                <div><small>Ausentes</small><strong>2</strong></div>
+                <div><small>Registros</small><strong>9</strong></div>
+              </div>
+              <div class="table-wrap">
+                <table class="compact-table">
+                  <thead>
+                    <tr>
+                      <th>Persona</th>
+                      <th>Asistió</th>
+                      <th>Entrada</th>
+                      <th>Salida</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Alex Medina</td>
+                      <td><span class="status-pill">Sí</span></td>
+                      <td>08:15</td>
+                      <td>14:00</td>
+                    </tr>
+                    <tr>
+                      <td>Lucía R.</td>
+                      <td><span class="status-pill">Sí</span></td>
+                      <td>09:05</td>
+                      <td>13:30</td>
+                    </tr>
+                    <tr>
+                      <td>Sofía N.</td>
+                      <td><span class="status-pill status-pill--inactive">No</span></td>
+                      <td>—</td>
+                      <td>—</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="panel rule-panel">
+              <p class="section-kicker">Regla de negocio</p>
+              <h3>Una casa, un parte por fecha.</h3>
+              <p>La V1 prevé evitar duplicados para la misma combinación de casa y fecha.</p>
+              <div class="rule-code">CASA + FECHA = ÚNICO</div>
+              <hr>
+              <p class="muted">La exportación a PDF/Excel está prevista como etapa posterior del mismo registro guardado
+                en base de datos.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ROLES -->
+        <section class="view" id="view-roles" data-view="roles">
+          <div class="section-toolbar">
+            <div>
+              <p class="section-kicker">Control de acceso</p>
+              <h2>Roles y permisos iniciales</h2>
+              <p>Esquema deliberadamente sencillo para la V1, preparado para validación con clientes.</p>
+            </div>
+          </div>
+
+          <div class="role-grid">
+            <article class="role-card">
+              <span class="role-number">01</span>
+              <h3>SuperAdmin</h3>
+              <p>Administra el sistema a nivel general.</p>
+              <div class="permission-list">
+                <span>gestionar_casas</span><span>gestionar_usuarios</span><span>gestionar_personas</span>
+                <span>gestionar_profesionales</span><span>gestionar_parte_diario</span><span>consultar_parte_diario</span>
+              </div>
+            </article>
+            <article class="role-card">
+              <span class="role-number">02</span>
+              <h3>Administrador</h3>
+              <p>Administra una casa y sus datos operativos.</p>
+              <div class="permission-list">
+                <span>gestionar_personas</span><span>gestionar_profesionales</span>
+                <span>gestionar_parte_diario</span><span>consultar_parte_diario</span>
+              </div>
+            </article>
+            <article class="role-card">
+              <span class="role-number">03</span>
+              <h3>Profesional</h3>
+              <p>Accede a las funciones necesarias para su actividad.</p>
+              <div class="permission-list">
+                <span>consultar_parte_diario</span><span>acceso según responsabilidad</span>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- AUDITORIA -->
+        <section class="view" id="view-audit" data-view="audit">
+          <div class="section-toolbar">
+            <div>
+              <p class="section-kicker">Trazabilidad</p>
+              <h2>Auditoría de acciones</h2>
+              <p>Registro demostrativo para identificar quién hizo qué y cuándo.</p>
+            </div>
+          </div>
+
+          <div class="table-card">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Usuario</th>
+                    <th>Acción</th>
+                    <th>Detalle</th>
+                  </tr>
+                </thead>
+                <tbody id="auditTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- MANUAL DE USUARIO -->
+        <section class="view" id="view-manual" data-view="manual">
+          <div class="manual-header">
+            <div>
+              <p class="section-kicker">Ayuda del sistema</p>
+              <h2>Manual de usuario</h2>
+              <p>
+                Esta guía explica el sistema paso a paso, con palabras simples. Está pensada para una persona
+                que entra por primera vez y necesita saber qué hace cada módulo, qué información debe cargar
+                y qué ocurre después de guardar.
+              </p>
+            </div>
+            <div class="manual-header-badge">
+              <strong>V1</strong>
+              <span>Guía del prototipo</span>
+            </div>
+          </div>
+
+          <div class="manual-layout">
+            <aside class="manual-index" aria-label="Índice del manual">
+              <strong>En esta guía</strong>
+              <a href="#manual-primeros-pasos">Primeros pasos</a>
+              <a href="#manual-resumen">Resumen</a>
+              <a href="#manual-casas">Casas</a>
+              <a href="#manual-usuarios">Usuarios</a>
+              <a href="#manual-personas">Personas asistidas</a>
+              <a href="#manual-profesionales">Profesionales</a>
+              <a href="#manual-parte">Parte diario</a>
+              <a href="#manual-roles">Roles y permisos</a>
+              <a href="#manual-auditoria">Auditoría</a>
+              <a href="#manual-flujos">Flujos frecuentes</a>
+              <a href="#manual-glosario">Glosario</a>
+            </aside>
+
+            <div class="manual-content">
+
+              <section class="manual-section" id="manual-primeros-pasos">
+                <div class="manual-section-number">01</div>
+                <div>
+                  <p class="section-kicker">Antes de empezar</p>
+                  <h3>Cómo orientarse dentro del sistema</h3>
+                  <p>
+                    La pantalla se divide en tres partes. A la izquierda está el menú principal. Arriba se muestra
+                    el módulo en el que estás trabajando. En el centro aparece la información del módulo seleccionado.
+                  </p>
+
+                  <div class="manual-quickstart">
+                    <article>
+                      <span>1</span>
+                      <div>
+                        <strong>Elegí un módulo</strong>
+                        <p>Usá el menú de la izquierda. El módulo seleccionado queda marcado para que siempre sepas
+                          dónde estás.</p>
+                      </div>
+                    </article>
+                    <article>
+                      <span>2</span>
+                      <div>
+                        <strong>Buscá antes de crear</strong>
+                        <p>En Casas y Usuarios podés usar el buscador. Esto ayuda a evitar registros duplicados.</p>
+                      </div>
+                    </article>
+                    <article>
+                      <span>3</span>
+                      <div>
+                        <strong>Usá los botones de alta</strong>
+                        <p>Los botones “Nueva casa”, “Nuevo usuario” o similares abren un formulario centrado en
+                          pantalla.</p>
+                      </div>
+                    </article>
+                    <article>
+                      <span>4</span>
+                      <div>
+                        <strong>Revisá antes de guardar</strong>
+                        <p>Los campos obligatorios deben estar completos. Si cancelás, no se registra ningún cambio.</p>
+                      </div>
+                    </article>
+                  </div>
+
+                  <div class="manual-note">
+                    <strong>Idea importante</strong>
+                    <p>
+                      El sistema trabaja con relaciones. Por ejemplo, un usuario puede estar relacionado con una o más
+                      casas
+                      y una persona asistida puede tener distintas estadías a lo largo del tiempo.
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              <details class="manual-module" id="manual-resumen" open>
+                <summary>
+                  <span class="manual-module-number">02</span>
+                  <div><strong>Resumen</strong><small>La pantalla inicial del SuperAdmin</small></div>
+                </summary>
+                <div class="manual-module-body">
+                  <p>
+                    Es la primera pantalla del sistema. Sirve para obtener una visión rápida de la organización sin
+                    entrar todavía en cada módulo.
+                  </p>
+                  <h4>¿Qué vas a encontrar?</h4>
+                  <ul>
+                    <li><strong>Casas activas:</strong> cantidad de unidades que actualmente están habilitadas.</li>
+                    <li><strong>Usuarios:</strong> cuentas que pueden acceder al sistema.</li>
+                    <li><strong>Personas asistidas:</strong> personas registradas para acompañamiento o alojamiento.
+                    </li>
+                    <li><strong>Profesionales:</strong> integrantes profesionales vinculados a una o más casas.</li>
+                    <li><strong>Estado de la red:</strong> resumen de cada casa.</li>
+                    <li><strong>Actividad reciente:</strong> últimas acciones registradas en auditoría.</li>
+                  </ul>
+                  <p class="manual-tip"><strong>Cuándo usarlo:</strong> al comenzar la jornada o cuando necesites una
+                    vista general.</p>
+                </div>
+              </details>
+
+              <details class="manual-module" id="manual-casas">
+                <summary>
+                  <span class="manual-module-number">03</span>
+                  <div><strong>Casas</strong><small>Alta y consulta de las unidades de la organización</small></div>
+                </summary>
+                <div class="manual-module-body">
+                  <p>
+                    Este módulo representa las distintas casas o albergues que forman parte de la organización.
+                    Desde acá se pueden consultar las casas existentes y registrar nuevas.
+                  </p>
+                  <h4>Dar de alta una casa</h4>
+                  <ol>
+                    <li>Entrá en <strong>Casas</strong>.</li>
+                    <li>Presioná <strong>Dar de alta una casa</strong>.</li>
+                    <li>Ingresá el nombre identificatorio de la casa.</li>
+                    <li>Completá calle y numeración.</li>
+                    <li>Elegí el estado: <strong>Activa</strong> o <strong>Inactiva</strong>.</li>
+                    <li>Revisá los datos y presioná <strong>Crear casa</strong>.</li>
+                  </ol>
+                  <div class="manual-fields">
+                    <div><span>Nombre</span>
+                      <p>Nombre con el que la organización identifica a la casa.</p>
+                    </div>
+                    <div><span>Dirección</span>
+                      <p>Calle y numeración donde funciona la unidad.</p>
+                    </div>
+                    <div><span>Estado</span>
+                      <p>Permite desactivar una casa sin borrar su historial.</p>
+                    </div>
+                  </div>
+                  <div class="manual-note">
+                    <strong>No cargues cantidades manualmente</strong>
+                    <p>Las cantidades de personas y profesionales se calculan a partir de los registros relacionados con
+                      esa casa.</p>
+                  </div>
+                  <h4>Abrir una casa</h4>
+                  <p>
+                    En el listado, el botón <strong>Abrir casa</strong> muestra un panel específico de esa unidad.
+                    Ahí podés consultar cuántas personas, profesionales y usuarios están relacionados con ella.
+                  </p>
+                </div>
+              </details>
+
+              <details class="manual-module" id="manual-usuarios">
+                <summary>
+                  <span class="manual-module-number">04</span>
+                  <div><strong>Usuarios</strong><small>Cuentas, casas asignadas y roles</small></div>
+                </summary>
+                <div class="manual-module-body">
+                  <p>
+                    Un usuario es una persona que posee credenciales para ingresar al sistema. Crear un usuario no
+                    consiste
+                    solamente en elegir un nombre y una contraseña: primero se registran sus datos personales y después
+                    se define a qué casas puede acceder.
+                  </p>
+
+                  <div class="manual-path">
+                    <span>PERSONA</span><i>→</i><span>USUARIO</span><i>→</i><span>USUARIO_CASA</span>
+                  </div>
+
+                  <h4>Dar de alta un usuario</h4>
+                  <ol>
+                    <li>Entrá en <strong>Usuarios</strong>.</li>
+                    <li>Presioná <strong>Dar de alta un usuario</strong>.</li>
+                    <li>Completá nombre, apellido, DNI y los datos de contacto disponibles.</li>
+                    <li>El nombre de usuario se completa usando el DNI en esta V1.</li>
+                    <li>Definí una clave provisoria.</li>
+                    <li>Seleccioná la casa y el rol que tendrá en esa casa.</li>
+                    <li>Si necesita otra casa, utilizá <strong>Asignar otra casa</strong>.</li>
+                    <li>Presioná <strong>Crear usuario</strong>.</li>
+                  </ol>
+
+                  <div class="manual-warning">
+                    <strong>Una misma casa no debe repetirse para el mismo usuario.</strong>
+                    <p>Si el usuario necesita varias responsabilidades, el modelo debe mantener una asignación coherente
+                      por casa.</p>
+                  </div>
+
+                  <h4>¿Qué significa “rol por casa”?</h4>
+                  <p>
+                    El permiso de una persona depende de la casa a la que entra. Por eso un mismo usuario puede estar
+                    relacionado con varias casas y su responsabilidad se define dentro de cada relación.
+                  </p>
+                </div>
+              </details>
+
+              <details class="manual-module" id="manual-personas">
+                <summary>
+                  <span class="manual-module-number">05</span>
+                  <div><strong>Personas asistidas</strong><small>Registro de personas y sus estadías</small></div>
+                </summary>
+                <div class="manual-module-body">
+                  <p>
+                    Se utiliza para registrar a las personas que reciben alojamiento o asistencia. La persona y la
+                    estadía
+                    se mantienen separadas para conservar correctamente el historial.
+                  </p>
+
+                  <div class="manual-path">
+                    <span>PERSONA</span><i>→</i><span>PERSONA_ASISTIDA</span><i>→</i><span>ESTADIA</span>
+                  </div>
+
+                  <h4>Registrar una persona asistida</h4>
+                  <ol>
+                    <li>Entrá en <strong>Personas asistidas</strong>.</li>
+                    <li>Presioná <strong>Nueva persona asistida</strong>.</li>
+                    <li>Completá los datos personales disponibles.</li>
+                    <li>Indicá el estado actual y, si corresponde, observaciones generales.</li>
+                    <li>Seleccioná la casa de la primera estadía.</li>
+                    <li>Indicá la fecha de ingreso.</li>
+                    <li>La fecha de egreso puede quedar pendiente si la estadía continúa.</li>
+                    <li>Guardá el registro.</li>
+                  </ol>
+
+                  <div class="manual-note">
+                    <strong>¿Por qué la estadía está separada?</strong>
+                    <p>
+                      Porque una misma persona puede ingresar más de una vez y también puede tener estadías en casas
+                      diferentes.
+                      De esta manera no se pierde la historia de ingresos y egresos.
+                    </p>
+                  </div>
+                </div>
+              </details>
+
+              <details class="manual-module" id="manual-profesionales">
+                <summary>
+                  <span class="manual-module-number">06</span>
+                  <div><strong>Profesionales</strong><small>Equipo profesional y casas vinculadas</small></div>
+                </summary>
+                <div class="manual-module-body">
+                  <p>
+                    Este módulo registra a los profesionales que intervienen en la organización. Un profesional puede
+                    estar vinculado a una o varias casas.
+                  </p>
+                  <h4>Datos principales</h4>
+                  <ul>
+                    <li>Nombre y apellido.</li>
+                    <li>DNI.</li>
+                    <li>Matrícula, cuando corresponda.</li>
+                    <li>Especialidad.</li>
+                    <li>Email.</li>
+                    <li>Una o más casas en las que trabaja.</li>
+                  </ul>
+                  <p class="manual-tip"><strong>Ejemplo:</strong> una psicóloga puede atender en Casa Centro y Casa
+                    Norte sin duplicar su registro personal.</p>
+                </div>
+              </details>
+
+              <details class="manual-module" id="manual-parte">
+                <summary>
+                  <span class="manual-module-number">07</span>
+                  <div><strong>Parte diario</strong><small>Registro de la actividad de una casa en una fecha</small>
+                  </div>
+                </summary>
+                <div class="manual-module-body">
+                  <p>
+                    El parte diario resume la actividad de una casa durante un día. Dentro del parte se registran
+                    asistencias, horarios de entrada y salida y observaciones.
+                  </p>
+                  <h4>Regla principal</h4>
+                  <p>
+                    Una casa debe tener como máximo <strong>un parte por fecha</strong>. Si ya existe un parte para esa
+                    casa y ese día, corresponde abrir el existente en lugar de generar otro.
+                  </p>
+                  <div class="manual-path">
+                    <span>CASA</span><i>→</i><span>PARTE_DIARIO</span><i>→</i><span>ASISTENCIA</span>
+                  </div>
+                  <p class="manual-tip">
+                    <strong>Exportación:</strong> la documentación prevé consultar partes guardados y exportarlos más
+                    adelante
+                    a PDF y/o Excel. El archivo será una representación de los datos, no una base de datos paralela.
+                  </p>
+                </div>
+              </details>
+
+              <details class="manual-module" id="manual-roles">
+                <summary>
+                  <span class="manual-module-number">08</span>
+                  <div><strong>Roles y permisos</strong><small>Qué puede hacer cada usuario</small></div>
+                </summary>
+                <div class="manual-module-body">
+                  <p>Los roles iniciales de la V1 son simples y están pensados para crecer después de la validación.</p>
+                  <div class="manual-role-table">
+                    <div class="manual-role-head"><span>Rol</span><span>Qué significa</span></div>
+                    <div><strong>SuperAdmin</strong><span>Administra el sistema a nivel general.</span></div>
+                    <div><strong>Administrador</strong><span>Administra una casa y sus datos operativos.</span></div>
+                    <div><strong>Profesional</strong><span>Accede a las funciones necesarias para su actividad.</span>
+                    </div>
+                  </div>
+                  <h4>Permisos iniciales contemplados</h4>
+                  <ul>
+                    <li>Gestionar casas.</li>
+                    <li>Gestionar usuarios.</li>
+                    <li>Gestionar personas asistidas.</li>
+                    <li>Gestionar profesionales.</li>
+                    <li>Crear o modificar partes diarios.</li>
+                    <li>Consultar partes diarios.</li>
+                  </ul>
+                </div>
+              </details>
+
+              <details class="manual-module" id="manual-auditoria">
+                <summary>
+                  <span class="manual-module-number">09</span>
+                  <div><strong>Auditoría</strong><small>Quién hizo qué y cuándo</small></div>
+                </summary>
+                <div class="manual-module-body">
+                  <p>
+                    Auditoría permite consultar acciones importantes realizadas dentro del sistema. Su objetivo es
+                    aportar trazabilidad: saber qué usuario hizo una acción y en qué momento.
+                  </p>
+                  <h4>Qué muestra cada fila</h4>
+                  <ul>
+                    <li><strong>Fecha:</strong> momento en que se registró la acción.</li>
+                    <li><strong>Usuario:</strong> persona que realizó la operación.</li>
+                    <li><strong>Acción:</strong> tipo de operación, por ejemplo alta de casa.</li>
+                    <li><strong>Detalle:</strong> explicación breve de lo ocurrido.</li>
+                  </ul>
+                  <div class="manual-warning">
+                    <strong>Auditoría no es un botón para editar información.</strong>
+                    <p>Es un historial de consulta. Sirve para revisar movimientos y detectar qué ocurrió ante una duda.
+                    </p>
+                  </div>
+                </div>
+              </details>
+
+              <section class="manual-section" id="manual-flujos">
+                <div class="manual-section-number">10</div>
+                <div>
+                  <p class="section-kicker">Tareas frecuentes</p>
+                  <h3>Qué hacer según lo que necesitás</h3>
+
+                  <div class="manual-workflows">
+                    <article>
+                      <strong>Necesito crear una casa</strong>
+                      <p>Casas → Dar de alta una casa → completar dirección → elegir estado → Crear casa.</p>
+                    </article>
+                    <article>
+                      <strong>Necesito darle acceso a alguien</strong>
+                      <p>Usuarios → Dar de alta un usuario → datos personales → cuenta → asignar casa y rol → Crear
+                        usuario.</p>
+                    </article>
+                    <article>
+                      <strong>Necesito registrar un ingreso</strong>
+                      <p>Personas asistidas → Nueva persona asistida → datos → estado → casa y fecha de ingreso →
+                        Guardar.</p>
+                    </article>
+                    <article>
+                      <strong>Necesito registrar un profesional</strong>
+                      <p>Profesionales → Nuevo profesional → datos profesionales → seleccionar una o más casas →
+                        Guardar.</p>
+                    </article>
+                    <article>
+                      <strong>Necesito saber quién hizo un cambio</strong>
+                      <p>Auditoría → buscar la operación por fecha, usuario, acción y detalle.</p>
+                    </article>
+                    <article>
+                      <strong>Necesito ver solamente una casa</strong>
+                      <p>Casas → buscar la casa → Abrir casa. El panel mostrará los registros asociados a esa unidad.
+                      </p>
+                    </article>
+                  </div>
+                </div>
+              </section>
+
+              <section class="manual-section" id="manual-glosario">
+                <div class="manual-section-number">11</div>
+                <div>
+                  <p class="section-kicker">Palabras del sistema</p>
+                  <h3>Glosario rápido</h3>
+                  <dl class="manual-glossary">
+                    <div>
+                      <dt>Alta</dt>
+                      <dd>Crear un nuevo registro dentro del sistema.</dd>
+                    </div>
+                    <div>
+                      <dt>Casa</dt>
+                      <dd>Unidad o albergue perteneciente a la organización.</dd>
+                    </div>
+                    <div>
+                      <dt>Persona</dt>
+                      <dd>Registro general de datos personales. Puede relacionarse con usuario, profesional o persona
+                        asistida.</dd>
+                    </div>
+                    <div>
+                      <dt>Usuario</dt>
+                      <dd>Persona que posee credenciales para acceder al sistema.</dd>
+                    </div>
+                    <div>
+                      <dt>Persona asistida</dt>
+                      <dd>Persona que recibe alojamiento o asistencia.</dd>
+                    </div>
+                    <div>
+                      <dt>Estadía</dt>
+                      <dd>Período en el que una persona asistida permanece vinculada a una casa.</dd>
+                    </div>
+                    <div>
+                      <dt>Profesional</dt>
+                      <dd>Persona registrada con especialidad y, cuando corresponda, matrícula.</dd>
+                    </div>
+                    <div>
+                      <dt>Rol</dt>
+                      <dd>Responsabilidad que determina el alcance de un usuario.</dd>
+                    </div>
+                    <div>
+                      <dt>Permiso</dt>
+                      <dd>Acción concreta que un rol tiene permitido realizar.</dd>
+                    </div>
+                    <div>
+                      <dt>Parte diario</dt>
+                      <dd>Registro de la actividad de una casa para una fecha determinada.</dd>
+                    </div>
+                    <div>
+                      <dt>Auditoría</dt>
+                      <dd>Historial que permite identificar acciones realizadas por los usuarios.</dd>
+                    </div>
+                  </dl>
+
+                  <div class="manual-final-note">
+                    <strong>Si tenés una duda, pensá primero en qué información querés administrar.</strong>
+                    <p>
+                      Si es una unidad física, usá Casas. Si es una cuenta de acceso, Usuarios. Si se trata de una
+                      persona
+                      que recibe asistencia, Personas asistidas. Si es alguien que presta una actividad profesional,
+                      Profesionales. Para actividad cotidiana de una casa, Parte diario.
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- DETALLE CASA -->
+        <section class="view" id="view-house-detail" data-view="house-detail">
+          <button class="back-button" data-view-link="houses">← Volver a casas</button>
+          <div class="house-detail-hero">
+            <div>
+              <p class="section-kicker">Panel de gestión de casa</p>
+              <h2 id="houseDetailName">Casa</h2>
+              <p id="houseDetailAddress"></p>
+            </div>
+            <span class="status-pill" id="houseDetailStatus">Activa</span>
+          </div>
+          <div class="metric-grid metric-grid--three">
+            <article class="metric-card">
+              <div class="metric-icon metric-icon--sage">◌</div>
+              <div><span>Personas asistidas</span><strong id="houseDetailAssisted">0</strong></div><small>Estadías
+                asociadas</small>
+            </article>
+            <article class="metric-card">
+              <div class="metric-icon metric-icon--yellow">✦</div>
+              <div><span>Profesionales</span><strong id="houseDetailProfessionals">0</strong></div><small>Equipo
+                vinculado</small>
+            </article>
+            <article class="metric-card">
+              <div class="metric-icon metric-icon--coral">◎</div>
+              <div><span>Usuarios</span><strong id="houseDetailUsers">0</strong></div><small>Con acceso a esta
+                casa</small>
+            </article>
+          </div>
+          <div class="dashboard-grid">
+            <article class="panel">
+              <div class="panel-heading">
+                <div>
+                  <p class="section-kicker">Personas</p>
+                  <h3>Actualmente vinculadas</h3>
+                </div>
+              </div>
+              <div id="houseDetailPeople" class="simple-list"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-heading">
+                <div>
+                  <p class="section-kicker">Equipo</p>
+                  <h3>Profesionales</h3>
+                </div>
+              </div>
+              <div id="houseDetailPros" class="simple-list"></div>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- ALTA CASA -->
+  <dialog class="app-dialog" id="houseDialog">
+    <form method="dialog" class="dialog-card" id="houseForm">
+      <div class="dialog-heading">
+        <div>
+          <p class="section-kicker">Alta de casa</p>
+          <h2>Nueva casa</h2>
+          <p>Campos definidos en el modelo V1.</p>
+        </div>
+        <button class="icon-button" type="button" data-close-dialog="houseDialog" aria-label="Cerrar">×</button>
+      </div>
+
+      <div class="form-grid">
+        <label class="field field--full">Nombre de la casa
+          <input name="name" required placeholder="Ej. Casa Norte">
+        </label>
+        <label class="field">Calle
+          <input name="street" required placeholder="Ej. Rivadavia">
+        </label>
+        <label class="field">Numeración
+          <input name="number" required inputmode="numeric" placeholder="2450">
+        </label>
+        <label class="field field--full">Estado
+          <select name="status" required>
+            <option>Activa</option>
+            <option>Inactiva</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="data-note">
+        <strong>No se cargan totales manuales.</strong>
+        <span>La cantidad de asistidos y profesionales se obtiene de las relaciones del sistema.</span>
+      </div>
+
+      <div class="dialog-actions">
+        <button class="button button-secondary" type="button" data-close-dialog="houseDialog">Cancelar</button>
+        <button class="button button-primary" type="submit">Crear casa</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ALTA USUARIO -->
+  <dialog class="app-dialog app-dialog--wide" id="userDialog">
+    <form method="dialog" class="dialog-card" id="userForm">
+      <div class="dialog-heading">
+        <div>
+          <p class="section-kicker">Alta de usuario</p>
+          <h2>Crear persona + cuenta + accesos</h2>
+          <p>El formulario respeta la separación PERSONA / USUARIO / USUARIO_CASA.</p>
+        </div>
+        <button class="icon-button" type="button" data-close-dialog="userDialog" aria-label="Cerrar">×</button>
+      </div>
+
+      <div class="form-step">
+        <span>1</span>
+        <div><strong>Datos de la persona</strong><small>Entidad PERSONA</small></div>
+      </div>
+      <div class="form-grid form-grid--three">
+        <label class="field">Nombre<input name="firstName" required></label>
+        <label class="field">Apellido<input name="lastName" required></label>
+        <label class="field">DNI<input name="dni" id="userDni" required inputmode="numeric"></label>
+        <label class="field">Fecha de nacimiento<input name="birthDate" type="date"></label>
+        <label class="field">Código de área<input name="areaCode" inputmode="numeric" placeholder="342"></label>
+        <label class="field">Teléfono<input name="phone" inputmode="tel"></label>
+        <label class="field field--full">Email<input name="email" type="email"></label>
+        <label class="field">Calle<input name="street"></label>
+        <label class="field">Numeración<input name="streetNumber"></label>
+      </div>
+
+      <div class="form-step">
+        <span>2</span>
+        <div><strong>Cuenta de acceso</strong><small>Entidad USUARIO</small></div>
+      </div>
+      <div class="form-grid">
+        <label class="field">Nombre de usuario
+          <input name="username" id="usernamePreview" readonly placeholder="Se completa con el DNI">
+        </label>
+        <label class="field">Clave provisoria
+          <input name="password" type="password" minlength="8" required value="Vincularte#2026">
+        </label>
+      </div>
+
+      <div class="form-step">
+        <span>3</span>
+        <div><strong>Casas y roles</strong><small>Relación USUARIO_CASA</small></div>
+      </div>
+      <div id="assignmentRows" class="assignment-list"></div>
+      <button class="add-row-button" id="addAssignment" type="button">+ Asignar otra casa</button>
+
+      <div class="dialog-actions">
+        <button class="button button-secondary" type="button" data-close-dialog="userDialog">Cancelar</button>
+        <button class="button button-primary" type="submit">Crear usuario</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ALTA PERSONA ASISTIDA -->
+  <dialog class="app-dialog app-dialog--wide" id="assistedDialog">
+    <form method="dialog" class="dialog-card" id="assistedForm">
+      <div class="dialog-heading">
+        <div>
+          <p class="section-kicker">Alta de persona asistida</p>
+          <h2>Registrar persona y estadía</h2>
+          <p>Una sola pantalla para un flujo que crea registros relacionados.</p>
+        </div>
+        <button class="icon-button" type="button" data-close-dialog="assistedDialog" aria-label="Cerrar">×</button>
+      </div>
+
+      <div class="form-step">
+        <span>1</span>
+        <div><strong>Datos personales</strong><small>PERSONA</small></div>
+      </div>
+      <div class="form-grid form-grid--three">
+        <label class="field">Nombre<input name="firstName" required></label>
+        <label class="field">Apellido<input name="lastName" required></label>
+        <label class="field">DNI<input name="dni" required inputmode="numeric"></label>
+        <label class="field">Fecha de nacimiento<input name="birthDate" type="date"></label>
+        <label class="field">Código de área<input name="areaCode" placeholder="342"></label>
+        <label class="field">Teléfono<input name="phone"></label>
+        <label class="field field--full">Email<input name="email" type="email"></label>
+        <label class="field">Calle<input name="street"></label>
+        <label class="field">Numeración<input name="streetNumber"></label>
+      </div>
+
+      <div class="form-step">
+        <span>2</span>
+        <div><strong>Datos de acompañamiento</strong><small>PERSONA_ASISTIDA</small></div>
+      </div>
+      <div class="form-grid">
+        <label class="field">Estado
+          <select name="state" required>
+            <option>Activa</option>
+            <option>En seguimiento</option>
+            <option>Egresada</option>
+          </select>
+        </label>
+        <label class="field field--full">Observaciones generales
+          <textarea name="observations" rows="3" placeholder="Campo provisional sujeto a validación"></textarea>
+        </label>
+      </div>
+
+      <div class="form-step">
+        <span>3</span>
+        <div><strong>Primera estadía</strong><small>ESTADIA</small></div>
+      </div>
+      <div class="form-grid">
+        <label class="field">Casa<select name="houseId" id="assistedHouse" required></select></label>
+        <label class="field">Fecha de ingreso<input name="checkIn" type="date" required></label>
+        <label class="field">Fecha de egreso<input name="checkOut" type="date"></label>
+        <label class="field field--full">Observación de estadía<textarea name="stayObservation"
+            rows="2"></textarea></label>
+      </div>
+
+      <div class="dialog-actions">
+        <button class="button button-secondary" type="button" data-close-dialog="assistedDialog">Cancelar</button>
+        <button class="button button-primary" type="submit">Registrar persona</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ALTA PROFESIONAL -->
+  <dialog class="app-dialog app-dialog--wide" id="professionalDialog">
+    <form method="dialog" class="dialog-card" id="professionalForm">
+      <div class="dialog-heading">
+        <div>
+          <p class="section-kicker">Alta de profesional</p>
+          <h2>Nuevo profesional</h2>
+          <p>PERSONA + PROFESIONAL + PROFESIONAL_CASA.</p>
+        </div>
+        <button class="icon-button" type="button" data-close-dialog="professionalDialog" aria-label="Cerrar">×</button>
+      </div>
+
+      <div class="form-grid form-grid--three">
+        <label class="field">Nombre<input name="firstName" required></label>
+        <label class="field">Apellido<input name="lastName" required></label>
+        <label class="field">DNI<input name="dni" required></label>
+        <label class="field">Matrícula<input name="license"></label>
+        <label class="field">Especialidad<input name="specialty" required placeholder="Ej. Psicología"></label>
+        <label class="field">Email<input name="email" type="email"></label>
+        <label class="field field--full">Casas
+          <select name="houseIds" id="professionalHouses" multiple size="3" required></select>
+          <small class="field-help">Ctrl/Cmd + clic para seleccionar más de una.</small>
+        </label>
+      </div>
+
+      <div class="dialog-actions">
+        <button class="button button-secondary" type="button" data-close-dialog="professionalDialog">Cancelar</button>
+        <button class="button button-primary" type="submit">Crear profesional</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+
+</html>

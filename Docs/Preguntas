@@ -1,0 +1,12 @@
+1. Pedir el camino que tienen que cumplir las personas para egresar.
+Preguntar si es un camino igual para todas las personas o mas personalizado.
+Preguntar si el camino se tiene que hacer en un orden fijo o se puede ir cumpliendo sin un orden estricto.
+
+2. El parte diario es algo como una observación que se carga en el dia o un historial de lo hecho en el día.
+Se puede modificar un parte diario de una fecha pasada, o queda bloqueado una vez cerrado el día.
+
+3. Qué acciones son prioritarias para auditar: altas/bajas/modificaciones de personas, cambios de permisos, inicios de sesión, todo.
+Qué reportes concretos necesitan generarse (por casa, por persona, por período)-+.
+
+4. Además de llevar asistencia a los talleres, siguen necesitando un registro general de presencia diaria de cada casa 
+(quién estuvo, entrada/salida) o ese seguimiento diario en la práctica queda cubierto con la asistencia a talleres y otras actividades.

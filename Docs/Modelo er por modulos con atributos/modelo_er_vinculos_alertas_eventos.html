@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Diagrama ER - Vínculos, Alertas y Eventos Críticos</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+      height: 100vh;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      color: #000;
+    }
+    #erd-container {
+      background: #fff;
+      flex-grow: 1;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      overflow: hidden;
+      position: relative;
+    }
+    .controls-hint {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      background: rgba(0, 0, 0, 0.85);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      pointer-events: none;
+      z-index: 10;
+    }
+    #erd {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Estilos de bordes y divisiones */
+    #erd svg.erDiagram .divider path { stroke-opacity: 0.5; }
+    #erd svg.erDiagram .row-rect-odd path,
+    #erd svg.erDiagram .row-rect-odd rect,
+    #erd svg.erDiagram .row-rect-even path,
+    #erd svg.erDiagram .row-rect-even rect { stroke: none !important; }
+
+    /* Forzado estricto de letra negra en todo el SVG */
+    #erd svg.erDiagram text,
+    #erd svg.erDiagram text *,
+    #erd svg.erDiagram .nodeText,
+    #erd svg.erDiagram tspan,
+    #erd svg.erDiagram .entityBox text {
+      fill: #000000 !important;
+      color: #000000 !important;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+</head>
+<body>
+
+  <h2>Diagrama Entidad-Relación — Vínculos, Alertas y Eventos Críticos</h2>
+  <div id="erd-container">
+    <div class="controls-hint">Usa la rueda del mouse para hacer ZOOM y arrastra para MOVER</div>
+    <div id="erd">Cargando diagrama...</div>
+  </div>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+    await document.fonts.ready;
+
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      fontFamily: 'sans-serif',
+      themeVariables: {
+        darkMode: false,
+        fontSize: '13px',
+        lineColor: '#73726c',
+        textColor: '#000000',
+        attributeFontColor: '#000000',
+        entityTitleColor: '#000000'
+      },
+    });
+
+    const def = `erDiagram
+      PERSONA_ASISTIDA ||--o{ VINCULO : tiene
+      TIPO_VINCULO ||--o{ VINCULO : clasifica
+
+      PERSONA_ASISTIDA ||--o{ ALERTA : genera
+      TIPO_ALERTA ||--o{ ALERTA : tipifica
+      AREA ||--o{ TIPO_ALERTA : asocia_opcional
+      PROFESIONAL ||--o{ ALERTA : atiende_opcional
+
+      TIPO_EVENTO_CRITICO ||--o{ EVENTO_CRITICO : tipifica
+      NIVEL_GRAVEDAD ||--o{ EVENTO_CRITICO : clasifica
+      PROFESIONAL ||--o{ EVENTO_CRITICO : reporta
+      DISPOSITIVO ||--o{ EVENTO_CRITICO : ocurre_en_opcional
+      EVENTO_CRITICO ||--o{ EVENTO_CRITICO_PERSONA : involucra
+      PERSONA_ASISTIDA ||--o{ EVENTO_CRITICO_PERSONA : participa_en
+
+      PERSONA_ASISTIDA {
+        int id_asistida PK
+      }
+      PROFESIONAL {
+        int id_profesional PK
+      }
+      AREA {
+        int id_area PK
+        string nombre
+      }
+      DISPOSITIVO {
+        int id_dispositivo PK
+      }
+      TIPO_VINCULO {
+        int id_tipo_vinculo PK
+        string nombre
+      }
+      VINCULO {
+        int id_vinculo PK
+        int id_asistida FK
+        int id_tipo_vinculo FK
+        string nombre_persona
+        string domicilio
+        string telefono_contacto
+        string clasificacion
+        string frecuencia_contacto
+        boolean mantiene_vinculo
+        boolean presenta_violencia
+        string detalle_violencia
+        boolean tiene_medida_judicial
+        string detalle_medida_judicial
+        string observaciones
+      }
+      TIPO_ALERTA {
+        int id_tipo_alerta PK
+        string nombre
+        int id_area FK
+        string regla_generacion
+      }
+      ALERTA {
+        int id_alerta PK
+        int id_asistida FK
+        int id_tipo_alerta FK
+        date fecha_generada
+        string descripcion
+        string estado
+        date fecha_atencion
+        int id_profesional_atiende FK
+      }
+      TIPO_EVENTO_CRITICO {
+        int id_tipo_evento PK
+        string nombre
+      }
+      NIVEL_GRAVEDAD {
+        int id_nivel_gravedad PK
+        string nombre
+        int orden
+      }
+      EVENTO_CRITICO {
+        int id_evento PK
+        int id_tipo_evento FK
+        int id_nivel_gravedad FK
+        int id_dispositivo FK
+        int id_profesional_reporta FK
+        string fecha_hora
+        string descripcion
+        string intervenciones_realizadas
+        string instituciones_articuladas
+        string estado
+      }
+      EVENTO_CRITICO_PERSONA {
+        int id_evento PK, FK
+        int id_asistida PK, FK
+        string rol_en_evento
+      }
+    `;
+
+    try {
+      const { svg } = await mermaid.render('erd-svg', def);
+      const container = document.getElementById('erd');
+      container.innerHTML = svg;
+
+      // Transformación de los nodos para agregar bordes redondeados rx="8"
+      document.querySelectorAll('#erd svg.erDiagram .node').forEach(node => {
+        const firstPath = node.querySelector('path[d]');
+        if (!firstPath) return;
+        const d = firstPath.getAttribute('d');
+        const nums = d.match(/-?[\d.]+/g)?.map(Number);
+        if (!nums || nums.length < 8) return;
+        const xs = [nums[0], nums[2], nums[4], nums[6]];
+        const ys = [nums[1], nums[3], nums[5], nums[7]];
+        const x = Math.min(...xs), y = Math.min(...ys);
+        const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('x', x); rect.setAttribute('y', y);
+        rect.setAttribute('width', w); rect.setAttribute('height', h);
+        rect.setAttribute('rx', '8');
+        for (const a of ['fill', 'stroke', 'stroke-width', 'class', 'style']) {
+          if (firstPath.hasAttribute(a)) rect.setAttribute(a, firstPath.getAttribute(a));
+        }
+        firstPath.replaceWith(rect);
+      });
+
+      document.querySelectorAll('#erd svg.erDiagram .row-rect-odd path, #erd svg.erDiagram .row-rect-even path').forEach(p => {
+        p.setAttribute('stroke', 'none');
+      });
+
+      // Inicialización del motor Pan/Zoom
+      const svgElement = container.querySelector('svg');
+      if (svgElement) {
+        svgElement.setAttribute('width', '100%');
+        svgElement.setAttribute('height', '100%');
+        svgPanZoom(svgElement, {
+          zoomEnabled: true,
+          controlIconsEnabled: true,
+          maxZoom: 10,
+          minZoom: 0.5,
+          zoomScaleSensitivity: 0.3,
+          mouseWheelZoomEnabled: true
+        });
+      }
+    } catch (e) {
+      document.getElementById('erd').innerHTML = `<p style="color:red; padding:10px;">Error al renderizar: ${e.message}</p>`;
+      console.error(e);
+    }
+  </script>
+</body>
+</html>

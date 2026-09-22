@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagrama ER - Sistema (Con Zoom)</title>
+    <style>
+        body { 
+            font-family: sans-serif; 
+            background: #f4f4f9; 
+            margin: 0; 
+            padding: 20px; 
+            height: 100vh;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        h2 { margin-top: 0; font-size: 1.2rem; color: #333; }
+        
+        #erd-container { 
+            background: #fff; 
+            flex-grow: 1; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            overflow: hidden;
+            position: relative;
+        }
+
+        .controls-hint {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        #erd { width: 100%; height: 100%; }
+
+        #erd svg.erDiagram text,
+        #erd svg.erDiagram .nodeText,
+        #erd svg.erDiagram tspan {
+            fill: #000000 !important;
+        }
+    </style>
+    <!-- Librería svg-pan-zoom -->
+    <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+</head>
+<body>
+
+    <h2>Diagrama Entidad-Relación</h2>
+    <div id="erd-container">
+        <div class="controls-hint">Usa la rueda del mouse para hacer ZOOM y arrastra para MOVER</div>
+        <div id="erd">Cargando diagrama...</div>
+    </div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+
+const def = `erDiagram
+  USUARIO ||--o| PROFESIONAL : "puede_ser"
+  USUARIO ||--o{ USUARIO_CASA : accede_a
+  CASA ||--o{ USUARIO_CASA : tiene
+  ROL ||--o{ USUARIO_CASA : asigna
+  PROFESIONAL ||--o{ PROFESIONAL_AREA : tiene_alcance_en
+  AREA ||--o{ PROFESIONAL_AREA : otorga
+  PERSONA_ASISTIDA ||--o{ ESTADIA : registra
+  CASA ||--o{ ESTADIA : aloja
+  CASA ||--o{ PARTE_DIARIO : genera
+  PARTE_DIARIO ||--o{ REGISTRO_PRESENCIA : contiene
+  PERSONA_ASISTIDA ||--o{ REGISTRO_PRESENCIA : participa
+  PERSONA_ASISTIDA ||--o{ SEGUIMIENTO : tiene
+  PROFESIONAL ||--o{ SEGUIMIENTO : realiza
+  AREA ||--o{ SEGUIMIENTO : clasifica
+  PERSONA_ASISTIDA ||--o| FICHA_EDUCACION : tiene
+  PERSONA_ASISTIDA ||--o| FICHA_SALUD : tiene
+  PERSONA_ASISTIDA ||--o| FICHA_ASISTENCIA_SOCIAL : tiene
+  PROFESIONAL ||--o{ FICHA_SALUD : responsable_de
+  USUARIO ||--o{ AUDITORIA : genera
+  CASA ||--o{ TALLER : ofrece
+  AREA ||--o{ TALLER : clasifica
+  TALLER ||--o{ INSCRIPCION_TALLER : recibe
+  PERSONA_ASISTIDA ||--o{ INSCRIPCION_TALLER : se_inscribe
+  TALLER ||--o{ TALLER_PROFESIONAL : dictado_por
+  PROFESIONAL ||--o{ TALLER_PROFESIONAL : dicta
+  TALLER ||--o{ SESION_TALLER : tiene
+  SESION_TALLER ||--o{ ASISTENCIA_TALLER : registra
+  PERSONA_ASISTIDA ||--o{ ASISTENCIA_TALLER : asiste
+
+  USUARIO {
+    int id_usuario PK
+    string dni UK
+    string nombre
+    string apellido
+    date fecha_nacimiento
+    string sexo
+    string email
+    string telefono
+    string nom_usuario UK
+    string clave
+    string estado
+  }
+  PROFESIONAL {
+    int id_profesional PK
+    int id_usuario FK, UK
+    string matricula
+    string especialidad
+  }
+  PERSONA_ASISTIDA {
+    int id_asistida PK
+    string dni
+    string nombre
+    string apellido
+    date fecha_nacimiento
+    string sexo
+    string telefono
+    string email
+    string estado
+    string observaciones
+  }
+  CASA {
+    int id_casa PK
+    string nombre_casa
+    string direccion
+    string telefono
+    string email
+    int capacidad
+    string estado
+  }
+  USUARIO_CASA {
+    int id_usuario PK, FK
+    int id_casa PK, FK
+    int id_rol FK
+  }
+  ROL {
+    int id_rol PK
+    string nombre
+    string descripcion
+  }
+  AREA {
+    int id_area PK
+    string nombre
+    boolean activo
+  }
+  PROFESIONAL_AREA {
+    int id_profesional PK, FK
+    int id_area PK, FK
+    boolean puede_leer
+    boolean puede_escribir
+  }
+  ESTADIA {
+    int id_estadia PK
+    int id_asistida FK
+    int id_casa FK
+    date fecha_ingreso
+    date fecha_egreso
+    string observacion
+  }
+  PARTE_DIARIO {
+    int id_parte_diario PK
+    int id_casa FK
+    date fecha
+    string observacion_general
+  }
+  REGISTRO_PRESENCIA {
+    int id_registro PK
+    int id_parte_diario FK
+    int id_asistida FK
+    boolean asistio
+    string hora_entrada
+    string hora_salida
+  }
+  SEGUIMIENTO {
+    int id_seguimiento PK
+    int id_asistida FK
+    int id_profesional FK
+    int id_area FK
+    date fecha
+    string observacion
+  }
+  FICHA_EDUCACION {
+    int id_ficha_educacion PK
+    int id_asistida FK, UK
+    string institucion_educativa
+    string nivel
+    string curso
+    string rendimiento
+  }
+  FICHA_SALUD {
+    int id_ficha_salud PK
+    int id_asistida FK, UK
+    int id_profesional_responsable FK
+    string tipo_atencion
+    string indicaciones
+  }
+  FICHA_ASISTENCIA_SOCIAL {
+    int id_ficha_asistencia PK
+    int id_asistida FK, UK
+    string situacion
+    string tipo_asistencia
+    string intervencion
+  }
+  AUDITORIA {
+    int id_auditoria PK
+    int id_usuario FK
+    string accion
+    string entidad
+    int id_entidad
+    string fecha
+  }
+  TALLER {
+    int id_taller PK
+    int id_casa FK
+    int id_area FK
+    string nombre
+    string dia_horario
+    int cupo_maximo
+    string estado
+  }
+  INSCRIPCION_TALLER {
+    int id_asistida PK, FK
+    int id_taller PK, FK
+    date fecha_inscripcion
+    string estado
+  }
+  TALLER_PROFESIONAL {
+    int id_taller PK, FK
+    int id_profesional PK, FK
+  }
+  SESION_TALLER {
+    int id_sesion PK
+    int id_taller FK
+    date fecha
+    string observacion
+  }
+  ASISTENCIA_TALLER {
+    int id_sesion PK, FK
+    int id_asistida PK, FK
+    boolean presente
+    string observacion
+  }
+`;
+
+async function renderDiagram() {
+  try {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      fontFamily: 'sans-serif',
+      themeVariables: {
+        darkMode: false,
+        fontSize: '13px',
+        lineColor: '#73726c',
+        textColor: '#000000',
+      },
+    });
+
+    const { svg } = await mermaid.render('erd-svg', def);
+    const erdDiv = document.getElementById('erd');
+    erdDiv.innerHTML = svg;
+
+    const svgElement = erdDiv.querySelector('svg');
+    if (svgElement) {
+      svgElement.setAttribute('width', '100%');
+      svgElement.setAttribute('height', '100%');
+      
+      window.panZoomInstance = svgPanZoom(svgElement, {
+        zoomEnabled: true,
+        controlIconsEnabled: true,
+        maxZoom: 10,
+        minZoom: 0.5,
+        zoomScaleSensitivity: 0.3,
+        mouseWheelZoomEnabled: true
+      });
+    }
+  } catch (e) {
+    document.getElementById('erd').innerHTML = `<p style="color:red; padding:10px;">Error al renderizar: ${e.message}</p>`;
+    console.error(e);
+  }
+}
+
+renderDiagram();
+</script>
+
+</body>
+</html>

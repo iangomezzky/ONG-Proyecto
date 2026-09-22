@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Diagrama ER - Ficha de Salud</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+      height: 100vh;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      color: #000;
+    }
+    #erd-container {
+      background: #fff;
+      flex-grow: 1;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      overflow: hidden;
+      position: relative;
+    }
+    .controls-hint {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      background: rgba(0, 0, 0, 0.85);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      pointer-events: none;
+      z-index: 10;
+    }
+    #erd {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Estilos de divisiones */
+    #erd svg.erDiagram .divider path { stroke-opacity: 0.5; }
+    #erd svg.erDiagram .row-rect-odd path,
+    #erd svg.erDiagram .row-rect-odd rect,
+    #erd svg.erDiagram .row-rect-even path,
+    #erd svg.erDiagram .row-rect-even rect { stroke: none !important; }
+
+    /* Forzado estricto de letra negra en todo el SVG */
+    #erd svg.erDiagram text,
+    #erd svg.erDiagram text *,
+    #erd svg.erDiagram .nodeText,
+    #erd svg.erDiagram tspan,
+    #erd svg.erDiagram .entityBox text {
+      fill: #000000 !important;
+      color: #000000 !important;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+</head>
+<body>
+
+  <h2>Diagrama Entidad-Relación — Módulo Ficha de Salud</h2>
+  <div id="erd-container">
+    <div class="controls-hint">Usa la rueda del mouse para hacer ZOOM y arrastra para MOVER</div>
+    <div id="erd">Cargando diagrama...</div>
+  </div>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+    await document.fonts.ready;
+
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      fontFamily: 'sans-serif',
+      themeVariables: {
+        darkMode: false,
+        fontSize: '13px',
+        lineColor: '#73726c',
+        textColor: '#000000',
+        attributeFontColor: '#000000',
+        entityTitleColor: '#000000'
+      },
+    });
+
+    const def = `erDiagram
+      PERSONA_ASISTIDA ||--o| FICHA_SALUD : tiene
+      FICHA_SALUD ||--o{ DIAGNOSTICO : registra
+      FICHA_SALUD ||--o{ ANTECEDENTE_PATOLOGICO : registra
+      FICHA_SALUD ||--o{ CIRUGIA : registra
+      FICHA_SALUD ||--o{ INTERNACION : registra
+      FICHA_SALUD ||--o{ PROFESIONAL_TRATANTE : registra
+      FICHA_SALUD ||--o{ TURNO_SALUD : agenda
+      PROFESIONAL_TRATANTE ||--o{ TURNO_SALUD : atiende_opcional
+      USUARIO ||--o{ TURNO_SALUD : registra_carga
+      FICHA_SALUD ||--o{ PRESCRIPCION : indica
+      PROFESIONAL_TRATANTE ||--o{ PRESCRIPCION : prescribe_opcional
+      PRESCRIPCION ||--o{ ADMINISTRACION_MEDICACION : se_administra_en
+      USUARIO ||--o{ ADMINISTRACION_MEDICACION : administra
+
+      PERSONA_ASISTIDA {
+        int id_asistida PK
+      }
+      USUARIO {
+        int id_usuario PK
+      }
+      FICHA_SALUD {
+        int id_ficha_salud PK
+        int id_asistida FK, UK
+        boolean tiene_obra_social
+        string obra_social_nombre
+        boolean posee_cud
+        boolean cud_vigente
+        string efector_salud_referencia
+      }
+      DIAGNOSTICO {
+        int id_diagnostico PK
+        int id_ficha_salud FK
+        string descripcion
+        date fecha_diagnostico
+        boolean es_segun_cud
+        string observaciones
+      }
+      ANTECEDENTE_PATOLOGICO {
+        int id_antecedente PK
+        int id_ficha_salud FK
+        string tipo
+        string descripcion
+        string observaciones
+      }
+      CIRUGIA {
+        int id_cirugia PK
+        int id_ficha_salud FK
+        string descripcion
+        date fecha
+        string observaciones
+      }
+      INTERNACION {
+        int id_internacion PK
+        int id_ficha_salud FK
+        string motivo
+        date fecha_ingreso
+        date fecha_egreso
+        string institucion
+        string observaciones
+      }
+      PROFESIONAL_TRATANTE {
+        int id_profesional_tratante PK
+        int id_ficha_salud FK
+        string nombre
+        string especialidad
+        string contacto
+      }
+      TURNO_SALUD {
+        int id_turno PK
+        int id_ficha_salud FK
+        int id_profesional_tratante FK
+        int id_usuario_registra FK
+        date fecha
+        string efector_salud
+        string motivo
+        string observaciones
+      }
+      PRESCRIPCION {
+        int id_prescripcion PK
+        int id_ficha_salud FK
+        int id_profesional_tratante FK
+        string medicamento
+        string dosis
+        string frecuencia
+        date fecha_inicio
+        date fecha_fin
+        string estado
+        string observaciones
+      }
+      ADMINISTRACION_MEDICACION {
+        int id_administracion PK
+        int id_prescripcion FK
+        int id_usuario_administra FK
+        int id_usuario_supervisa FK
+        string fecha_hora
+        string incidencia
+        string detalle_incidencia
+        string observaciones
+      }
+    `;
+
+    try {
+      const { svg } = await mermaid.render('erd-svg', def);
+      const container = document.getElementById('erd');
+      container.innerHTML = svg;
+
+      // Transformación de nodos para agregar bordes redondeados rx="8"
+      document.querySelectorAll('#erd svg.erDiagram .node').forEach(node => {
+        const firstPath = node.querySelector('path[d]');
+        if (!firstPath) return;
+        const d = firstPath.getAttribute('d');
+        const nums = d.match(/-?[\d.]+/g)?.map(Number);
+        if (!nums || nums.length < 8) return;
+        const xs = [nums[0], nums[2], nums[4], nums[6]];
+        const ys = [nums[1], nums[3], nums[5], nums[7]];
+        const x = Math.min(...xs), y = Math.min(...ys);
+        const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('x', x); rect.setAttribute('y', y);
+        rect.setAttribute('width', w); rect.setAttribute('height', h);
+        rect.setAttribute('rx', '8');
+        for (const a of ['fill', 'stroke', 'stroke-width', 'class', 'style']) {
+          if (firstPath.hasAttribute(a)) rect.setAttribute(a, firstPath.getAttribute(a));
+        }
+        firstPath.replaceWith(rect);
+      });
+
+      document.querySelectorAll('#erd svg.erDiagram .row-rect-odd path, #erd svg.erDiagram .row-rect-even path').forEach(p => {
+        p.setAttribute('stroke', 'none');
+      });
+
+      // Inicialización de Pan y Zoom
+      const svgElement = container.querySelector('svg');
+      if (svgElement) {
+        svgElement.setAttribute('width', '100%');
+        svgElement.setAttribute('height', '100%');
+        svgPanZoom(svgElement, {
+          zoomEnabled: true,
+          controlIconsEnabled: true,
+          maxZoom: 10,
+          minZoom: 0.5,
+          zoomScaleSensitivity: 0.3,
+          mouseWheelZoomEnabled: true
+        });
+      }
+    } catch (e) {
+      document.getElementById('erd').innerHTML = `<p style="color:red; padding:10px;">Error al renderizar: ${e.message}</p>`;
+      console.error(e);
+    }
+  </script>
+</body>
+</html>

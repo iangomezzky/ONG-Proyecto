@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Diagrama ER - ONG v6</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+      height: 100vh;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      color: #000;
+    }
+    #erd-container {
+      background: #fff;
+      flex-grow: 1;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      overflow: hidden;
+      position: relative;
+    }
+    .controls-hint {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      background: rgba(0, 0, 0, 0.85);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      pointer-events: none;
+      z-index: 10;
+    }
+    #erd {
+      width: 100%;
+      height: 100%;
+    }
+    /* Estilos personalizados */
+    #erd svg.erDiagram .divider path { stroke-opacity: 0.5; }
+    #erd svg.erDiagram .row-rect-odd path,
+    #erd svg.erDiagram .row-rect-odd rect,
+    #erd svg.erDiagram .row-rect-even path,
+    #erd svg.erDiagram .row-rect-even rect { stroke: none !important; }
+
+    /* Forzado estricto de letra negra en todo el SVG */
+    #erd svg.erDiagram text,
+    #erd svg.erDiagram text *,
+    #erd svg.erDiagram .nodeText,
+    #erd svg.erDiagram tspan,
+    #erd svg.erDiagram .entityBox text {
+      fill: #000000 !important;
+      color: #000000 !important;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+</head>
+<body>
+
+  <h2>Diagrama Entidad-Relación — ONG v6</h2>
+  <div id="erd-container">
+    <div class="controls-hint">Usa la rueda del mouse para hacer ZOOM y arrastra para MOVER</div>
+    <div id="erd">Cargando diagrama...</div>
+  </div>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+    await document.fonts.ready;
+
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      fontFamily: 'sans-serif',
+      themeVariables: {
+        darkMode: false,
+        fontSize: '13px',
+        lineColor: '#73726c',
+        textColor: '#000000',
+        attributeFontColor: '#000000',
+        entityTitleColor: '#000000'
+      },
+    });
+
+    const def = `erDiagram
+      PERSONA_ASISTIDA ||--o| FICHA_LABORAL : tiene
+      FICHA_LABORAL ||--o{ EXPERIENCIA_LABORAL : registra
+      FICHA_LABORAL ||--o{ CAPACITACION : registra
+
+      PERSONA_ASISTIDA ||--o| FICHA_ECONOMICA : tiene
+      FICHA_ECONOMICA ||--o{ MOVIMIENTO_ECONOMICO : registra
+
+      PERSONA_ASISTIDA ||--o{ PROGRAMA_SOCIAL : participa_en
+
+      PERSONA_ASISTIDA ||--o| FICHA_HABITACIONAL : tiene
+      FICHA_HABITACIONAL ||--o{ HISTORIAL_HABITACIONAL : registra
+
+      PERSONA_ASISTIDA ||--o{ REGISTRO_CUALITATIVO : tiene
+      PROFESIONAL ||--o{ REGISTRO_CUALITATIVO : redacta
+
+      PERSONA_ASISTIDA ||--o{ ARCHIVO_ADJUNTO : tiene
+      USUARIO ||--o{ ARCHIVO_ADJUNTO : carga
+
+      ESTADIA ||--o{ INVENTARIO_BIEN : registra
+
+      PERSONA_ASISTIDA {
+        int id_asistida PK
+      }
+      PROFESIONAL {
+        int id_profesional PK
+      }
+      USUARIO {
+        int id_usuario PK
+      }
+      ESTADIA {
+        int id_estadia PK
+      }
+      FICHA_LABORAL {
+        int id_ficha_laboral PK
+        int id_asistida FK, UK
+        string intereses
+        string observaciones
+      }
+      EXPERIENCIA_LABORAL {
+        int id_experiencia PK
+        int id_ficha_laboral FK
+        string puesto
+        string empleador
+        date fecha_inicio
+        date fecha_fin
+        string observaciones
+      }
+      CAPACITACION {
+        int id_capacitacion PK
+        int id_ficha_laboral FK
+        string nombre
+        string institucion
+        date fecha_inicio
+        date fecha_fin
+        string estado
+      }
+      FICHA_ECONOMICA {
+        int id_ficha_economica PK
+        int id_asistida FK, UK
+        boolean ingresos_estables
+        boolean administra_propios_recursos
+        string observaciones
+      }
+      MOVIMIENTO_ECONOMICO {
+        int id_movimiento PK
+        int id_ficha_economica FK
+        string tipo
+        string concepto
+        float monto
+        date fecha
+        string observaciones
+      }
+      PROGRAMA_SOCIAL {
+        int id_programa PK
+        int id_asistida FK
+        string tipo_programa
+        string nombre
+        date fecha_alta
+        date fecha_baja
+        string estado
+        string observaciones
+      }
+      FICHA_HABITACIONAL {
+        int id_ficha_habitacional PK
+        int id_asistida FK, UK
+        string situacion_actual
+        string observaciones
+      }
+      HISTORIAL_HABITACIONAL {
+        int id_historial PK
+        int id_ficha_habitacional FK
+        string tipo
+        string descripcion
+        date fecha_inicio
+        date fecha_fin
+        string observaciones
+      }
+      REGISTRO_CUALITATIVO {
+        int id_registro PK
+        int id_asistida FK
+        int id_profesional FK
+        date fecha
+        string tipo
+        string texto
+      }
+      ARCHIVO_ADJUNTO {
+        int id_archivo PK
+        int id_asistida FK
+        string categoria
+        string nombre_archivo
+        string ruta_url
+        date fecha_carga
+        int id_usuario_carga FK
+      }
+      INVENTARIO_BIEN {
+        int id_bien PK
+        int id_estadia FK
+        string momento
+        string tipo_bien
+        string descripcion
+        string estado
+        string foto_url
+        string firma_url
+        date fecha
+      }
+    `;
+
+    try {
+      const { svg } = await mermaid.render('erd-svg', def);
+      const container = document.getElementById('erd');
+      container.innerHTML = svg;
+
+      // Transformación de rectángulos a bordes redondeados (rx="8")
+      document.querySelectorAll('#erd svg.erDiagram .node').forEach(node => {
+        const firstPath = node.querySelector('path[d]');
+        if (!firstPath) return;
+        const d = firstPath.getAttribute('d');
+        const nums = d.match(/-?[\d.]+/g)?.map(Number);
+        if (!nums || nums.length < 8) return;
+        const xs = [nums[0], nums[2], nums[4], nums[6]];
+        const ys = [nums[1], nums[3], nums[5], nums[7]];
+        const x = Math.min(...xs), y = Math.min(...ys);
+        const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('x', x); rect.setAttribute('y', y);
+        rect.setAttribute('width', w); rect.setAttribute('height', h);
+        rect.setAttribute('rx', '8');
+        for (const a of ['fill', 'stroke', 'stroke-width', 'class', 'style']) {
+          if (firstPath.hasAttribute(a)) rect.setAttribute(a, firstPath.getAttribute(a));
+        }
+        firstPath.replaceWith(rect);
+      });
+
+      document.querySelectorAll('#erd svg.erDiagram .row-rect-odd path, #erd svg.erDiagram .row-rect-even path').forEach(p => {
+        p.setAttribute('stroke', 'none');
+      });
+
+      // Pan & Zoom
+      const svgElement = container.querySelector('svg');
+      if (svgElement) {
+        svgElement.setAttribute('width', '100%');
+        svgElement.setAttribute('height', '100%');
+        svgPanZoom(svgElement, {
+          zoomEnabled: true,
+          controlIconsEnabled: true,
+          maxZoom: 10,
+          minZoom: 0.5,
+          zoomScaleSensitivity: 0.3,
+          mouseWheelZoomEnabled: true
+        });
+      }
+    } catch (e) {
+      document.getElementById('erd').innerHTML = `<p style="color:red; padding:10px;">Error al renderizar: ${e.message}</p>`;
+      console.error(e);
+    }
+  </script>
+</body>
+</html>
